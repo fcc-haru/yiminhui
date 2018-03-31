@@ -1,0 +1,52 @@
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, img,
+b, i, ul, li, form, label, 
+table, tbody, tfoot, thead, tr, th, td{
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:middle;
+    background:transparent;
+    box-sizing: border-box;
+}
+html, body{
+    height: 100%;
+}
+body {
+    line-height:1;
+}
+
+:focus {
+    outline: 1;
+}
+
+ul,li {
+    list-style:none;
+}
+a {
+    margin:0;
+    padding:0;
+    border:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+    text-decoration: none;
+}
+
+table {
+    border-collapse:collapse;
+    border-spacing:0;
+}
+input,button{
+    list-style: none;
+    outline: none;
+    border: 0;
+}
+input, select {
+    vertical-align:middle;
+}
+body{
+    overflow-y: hidden
+}
