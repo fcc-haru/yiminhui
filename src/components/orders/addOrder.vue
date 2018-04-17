@@ -14,7 +14,7 @@ Vue.use(CustomerInfo);
 export default {
     data:function(){
       return {
-        showDel:"false"
+        // showDel:"false"
       }
     },
     methods:{

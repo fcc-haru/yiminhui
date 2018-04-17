@@ -12,8 +12,8 @@
             <p class="price">¥20.00</p>
         </div>
         <div class="ope">
-            <p class="del">删除</p>
-            <p>编辑</p>
+            <button class="del">删除</button>
+            <button >编辑</button>
         </div>
     </div>
 </template>
@@ -65,10 +65,10 @@ export default {
         vertical-align: middle;
         text-align: center;
     }
-    .ope p{
+    .ope button{
         background-color:#ccc;
         padding: 5px 15px;
-        margin:15px 0;
+         margin: 10px 0; 
         border-radius: 4px;
     }
 </style>

@@ -1,23 +1,25 @@
 <template>
-    <div class="loginContainer">
-           
-        <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm">
+    <div class="loginContainer">    
+        <form>
             <div class="logo">logo</div>
-            <el-form-item label="手机号" prop="passTel">
-                <el-input type="tel" v-model="rules2.passTel" auto-complete="off" placeholder="请输入手机号"></el-input>
-            </el-form-item>
-            <el-form-item label="密码" prop="passWord">
-                <el-input type="password" v-model="rules2.passWord" auto-complete="off" placeholder="请输入密码"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm2')">登录</el-button>
-            </el-form-item>
-        </el-form>
+            <div class="inputItem">
+              <label for="telBox">手机号</label>
+              <input type="tel" id="telBox" placeholder="请输入手机号">
+            </div>
+            <div class="inputItem">
+              <label for="pwdBox" class="pwdlabel">密  码</label>
+              <input type="password" id="pwdBox" placeholder="请输入密码">
+            </div>
+            <div class="submit"> 
+               <button type="submit" @click="submitForm()">登 录</button>
+            </div>
+        </form>
     </div>
 </template>
 <script>
   export default {
     data() {
+      isactived:false;
       var validatePassTel = (rule , value, callback) => {
         var PATTERN_CHINAMOBILE = /^1(3[4-9]|5[012789]|8[23478]|4[7]|7[8])\d{8}$/; 
         var PATTERN_CHINAUNICOM = /^1(3[0-2]|5[56]|8[56]|4[5]|7[6])\d{8}$/; 
@@ -58,15 +60,30 @@
       };
     },
     methods: {
+      actived(){
+        this.isactived=true;
+      },
       submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('登录成功');
-          } else {
-            console.log('提交失败');
-            return false;
-          }
+        // 为了让服务端渲染正确请求数据
+        this.$axios.defaults.baseURL = 'http://localhost:5757';
+      
+        this.$axios.post('/weapp/login', this.qs.stringify({
+          title: 'Fred'
+        }))
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
         });
+        // this.$refs[formName].validate((valid) => {
+        //   if (valid) {
+        //     alert('登录成功');
+        //   } else {
+        //     console.log('提交失败');
+        //     return false;
+        //   }
+        // });
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
@@ -91,22 +108,40 @@
     margin-top:-200px;
     margin-left:-250px;
     border:1px solid #ccc;
-    padding:20px 40px 0 0;
+    padding:20px;
 }
 .logo{
     height:100px;
     line-height:50px;
     text-align:center;
 }
-.el-form-item:last-of-type {
-    margin-top:50px;
+.inputItem{
+  margin: 0 50px 60px 50px;
 }
-.el-form-item:last-of-type .el-form-item__content{
-    text-align:center;
-    margin:0 !important;
+button{
+    padding:10px 30px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
 }
-.el-button{
-    padding:12px 50px;
-   
+label{
+  display: inline-block;
+  font-size: 18px;
+  font-weight: bold;
+  color:#555;
+  margin-right:20px;
+  width: 60px;
+
+}
+input{
+  border: 1px solid #ccc;
+  padding: 8px 15px;
+  border-radius: 4px;
+}
+.submit{
+  text-align: center;
+}
+.activeInput{
+  border:1px solid blue
 }
 </style>

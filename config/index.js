@@ -10,7 +10,15 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/weapp': {
+       target: 'http://192.168.1.108:5757',
+       changeOrigin: true,
+       pathRewrite: {
+        '^/weapp': '/'
+      }
+      }
+     },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

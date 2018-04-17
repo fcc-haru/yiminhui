@@ -5,7 +5,7 @@
         <span class="addNewproduct" @click="addNewproduct">添加新品</span>
       </div>
     
-    <productInfo></productInfo>
+    <productInfo :editProduct="editProduct"></productInfo>
     <productInfo></productInfo>
     <productInfo></productInfo>
     <productInfo></productInfo>
@@ -21,7 +21,11 @@ export default {
     methods:{
         addNewproduct(){
             this.$router.replace('/main/productManagement/addNewProduct');
+        },
+        editProduct(){
+            this.$router.replace('/main/productManagement/editProduct');
         }
+    
     }
 }
 </script>
