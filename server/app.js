@@ -8,7 +8,7 @@ const config = require('./config')
 app.use(bodyParser({
     enableTypes:['json', 'form', 'text']
   }))
-
+app.use(response)
 // 引入路由分发
 const router = require('./routes')
 app.use(router.routes())
