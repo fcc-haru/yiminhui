@@ -4,16 +4,16 @@
             <div class="logo">logo</div>
             <div class="inputItem">
               <label for="telBox">手机号</label>
-              <input type="tel" id="telBox" placeholder="请输入手机号" @focus="actived($event)" @blur="blurHaddle($event)" v-bind:class="{ active: isTelActive }" v-model="telNum">
-              <div class="message" v-show="wrongMsg">{{errorTelMessage}}</div>
+              <input type="tel" id="telBox" placeholder="请输入手机号" @focus="actived($event)" @keyup="blurHaddle($event)" @blur="blur($event)" v-bind:class="{ active: isTelActive }" v-model="telNum" required>
+              <div class="message" v-show="wrongTelMsg">{{errorTelMessage}}</div>
             </div>
             <div class="inputItem">
               <label for="pwdBox" class="pwdlabel">密  码</label>
-              <input type="password" id="pwdBox" placeholder="请输入密码" @focus="actived($event)" @blur="blurHaddle($event)" v-bind:class="{ active: isPwdActive }" v-model="pwdNum">
-              <div class="message" v-show="wrongMsg">{{errorPwdMessage}}</div>
+              <input type="password" id="pwdBox" placeholder="请输入密码" @focus="actived($event)" @keyup="blurHaddle($event)" @blur="blur($event)" v-bind:class="{ active: isPwdActive }" v-model="pwdNum" required>
+              <div class="message" v-show="wrongPwdMsg">{{errorPwdMessage}}</div>
             </div>
             <div class="submit"> 
-               <button type="submit" @click="submitForm()">登 录</button>
+               <button type="submit" @click="submitForm()" v-bind:disabled='isdisabled' v-bind:class="{ activeBtn: !isdisabled}">登 录</button>
             </div>
         </form>
     </div>
@@ -24,49 +24,14 @@
       return {
         isTelActive:false,
         isPwdActive:false,
-        wrongMsg: false,
+        wrongTelMsg: false,
+        wrongPwdMsg: false,
         telNum:'',
-        pwdNum:''
-
+        pwdNum:'',
+        errorTelMessage:'',
+        errorPwdMessage:'',
+        isdisabled:true
       }
-      // var validatePassTel = (rule , value, callback) => {
-      //   var PATTERN_CHINAMOBILE = /^1(3[4-9]|5[012789]|8[23478]|4[7]|7[8])\d{8}$/; 
-      //   var PATTERN_CHINAUNICOM = /^1(3[0-2]|5[56]|8[56]|4[5]|7[6])\d{8}$/; 
-      //   var PATTERN_CHINATELECOM = /^1(3[3])|(8[019])\d{8}$/; 
-      //   if (value === '') {
-      //     callback(new Error('请输入手机号'));
-      //   } else if(value.length !== 11){
-      //       callback(new Error('请输入有效的手机号！'));
-      //   }else {
-      //     if (PATTERN_CHINAUNICOM.test(value)||
-      //       PATTERN_CHINAMOBILE.test(value)||
-      //       PATTERN_CHINATELECOM.test(value)) {
-      //       this.$refs.ruleForm2.validateField('checkPass');
-      //     }
-      //     callback();
-      //   }
-      // };
-      // var validatePassWord = (rule, value, callback) => {
-      //   if (value === '') {
-      //     callback(new Error('请输入密码'));
-      //   }else {
-      //     callback();
-      //   }
-      // };
-      // return {
-      //   ruleForm2: {
-      //       passTel: '13612345678',
-      //       passWord: '123456',
-      //   },
-      //   rules2: {
-      //     passTel: [
-      //       { validator: validatePassTel, trigger: 'blur' }
-      //     ],
-      //     passWord: [
-      //       { validator: validatePassWord, trigger: 'blur' }
-      //     ]
-      //   }
-      // };
     },
     methods: {
       actived(event){
@@ -76,14 +41,28 @@
           this.isPwdActive=true;
         }   
       },
+      blur(){
+        if(event.target.id === "telBox"){
+           this.isTelActive=false;
+        }else if(event.target.id === "pwdBox"){
+          this.isPwdActive=false;
+        }  
+      },
       blurHaddle(event){
         if(event.target.id === "telBox"){
            this.isTelActive=false;
-           console.log(telNum);
-           console.log(this.telNum);
-           validatePassTel(this.telNum)
+           this.validatePassTel(this.telNum);
+           if(this.telNum !=="" && this.pwdNum!==""){
+             this.isdisabled=false;
+           }else{
+             this.isdisabled=true;
+           }
         }else if(event.target.id === "pwdBox"){
           this.isPwdActive=false;
+          this.validatePassPwd(this.pwdNum);
+          if(this.telNum !=="" && this.pwdNum!==""){
+             this.isdisabled=false;
+           }
         }  
       },
       validatePassTel(value){
@@ -91,16 +70,30 @@
         var PATTERN_CHINAUNICOM = /^1(3[0-2]|5[56]|8[56]|4[5]|7[6])\d{8}$/; 
         var PATTERN_CHINATELECOM = /^1(3[3])|(8[019])\d{8}$/; 
         if (value === '') {
-          callback(new Error('请输入手机号'));
+          this.isdisabled=true;
+          this.wrongTelMsg =true;
+          this.errorTelMessage='请输入手机号';
         } else if(value.length !== 11){
-            callback(new Error('请输入有效的手机号！'));
+          this.wrongTelMsg =true;
+          this.errorTelMessage='请输入有效的手机号！';
         }else {
           if (PATTERN_CHINAUNICOM.test(value)||
             PATTERN_CHINAMOBILE.test(value)||
             PATTERN_CHINATELECOM.test(value)) {
-            this.$refs.ruleForm2.validateField('checkPass');
+               this.wrongTelMsg =false;
+          }else{
+            this.wrongTelMsg =true;
+            this.errorTelMessage='请输入有效的手机号！';
           }
-          // callback();
+        }
+      },
+      validatePassPwd(value){
+          if (value === '') {
+            this.isdisabled=true;
+            this.wrongPwdMsg =true;
+            this.errorPwdMessage='请输入密码';
+        } else{
+          this.wrongPwdMsg =false;
         }
       },
       submitForm(formName) {
@@ -116,17 +109,6 @@
         .catch(function (error) {
           console.log(error);
         });
-        // this.$refs[formName].validate((valid) => {
-        //   if (valid) {
-        //     alert('登录成功');
-        //   } else {
-        //     console.log('提交失败');
-        //     return false;
-        //   }
-        // });
-      },
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
       }
     }
   }
@@ -187,5 +169,8 @@ input{
   color:red;
   margin-top:5px;
   padding-left: 82px;
+}
+.activeBtn{
+  background: greenyellow;
 }
 </style>
