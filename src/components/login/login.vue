@@ -1,19 +1,20 @@
 <template>
     <div class="loginContainer">    
-        <form>
+        <form @submit.prevent = "submitForm($event)">
             <div class="logo">logo</div>
             <div class="inputItem">
               <label for="telBox">手机号</label>
-              <input type="tel" id="telBox" placeholder="请输入手机号" @focus="actived($event)" @keyup="blurHaddle($event)" @blur="blur($event)" v-bind:class="{ active: isTelActive }" v-model="telNum" required>
+              <input type="tel" id="telBox" name = "user" placeholder="请输入手机号" @focus="actived($event)" @keyup="blurHaddle($event)" @blur="blur($event)" v-bind:class="{ active: isTelActive }" v-model="telNum" required>
               <div class="message" v-show="wrongTelMsg">{{errorTelMessage}}</div>
             </div>
             <div class="inputItem">
               <label for="pwdBox" class="pwdlabel">密  码</label>
-              <input type="password" id="pwdBox" placeholder="请输入密码" @focus="actived($event)" @keyup="blurHaddle($event)" @blur="blur($event)" v-bind:class="{ active: isPwdActive }" v-model="pwdNum" required>
+              <input type="password" id="pwdBox" name = "pwd"  placeholder="请输入密码" @focus="actived($event)" @keyup="blurHaddle($event)" @blur="blur($event)" v-bind:class="{ active: isPwdActive }" v-model="pwdNum" required>
               <div class="message" v-show="wrongPwdMsg">{{errorPwdMessage}}</div>
             </div>
             <div class="submit"> 
-               <button type="submit" @click="submitForm()" v-bind:disabled='isdisabled' v-bind:class="{ activeBtn: !isdisabled}">登 录</button>
+               <button type="submit" v-bind:disabled='isdisabled' v-bind:class="{ activeBtn: !isdisabled}">登 录</button>
+               <div class="error" v-show="iserror">{{errorMessage}}</div>
             </div>
         </form>
     </div>
@@ -30,11 +31,14 @@
         pwdNum:'',
         errorTelMessage:'',
         errorPwdMessage:'',
-        isdisabled:true
+        isdisabled:true,
+        iserror:false,
+        errorMessage:"登录失败：请输入正确的用户名和密码！"
       }
     },
     methods: {
       actived(event){
+        this.iserror = false;
         if(event.target.id === "telBox"){
            this.isTelActive=true;
         }else if(event.target.id === "pwdBox"){
@@ -96,15 +100,22 @@
           this.wrongPwdMsg =false;
         }
       },
-      submitForm(formName) {
+      submitForm(e) {
+        var that = this;
+        // e.preventDefault();
         // 为了让服务端渲染正确请求数据
         this.$axios.defaults.baseURL = 'http://localhost:5757';
-      
-        this.$axios.post('/weapp/login', this.qs.stringify({
-          title: 'Fred'
+        console.log(e)
+        that.$axios.post('/weapp/login', this.qs.stringify({
+          data: e
         }))
         .then(function (response) {
-          console.log(response);
+          console.log(response.data)
+          if(response.data==="success"){
+            that.$router.push({path: '/main'});
+          }else if(response.data==="error"){
+            that.iserror = true;
+          }
         })
         .catch(function (error) {
           console.log(error);
@@ -172,5 +183,10 @@ input{
 }
 .activeBtn{
   background: greenyellow;
+}
+.error{
+  margin-top:10px;
+  padding: 10px;
+  color:red;
 }
 </style>
